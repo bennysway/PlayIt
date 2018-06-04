@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      PlayIt
+      Welcome
     </ion-title>
   </ion-navbar>
 </ion-header>
@@ -9,7 +9,8 @@
 <ion-content padding>
   <p>
     Stream all music.
-    Be your own DJ
+    Be your own DJ.
+    PlayIt
   </p>
   <ion-list>
 
@@ -25,7 +26,11 @@
 
   </ion-list>
 
-  <div padding>
+  <div padding id="topButtons">
     <button
-      block ion-button color="secondary" (click)="signIn()">Sign In</button>
-  </div></ion-content>
+      ion-button color="primary" (click)="signIn()">Sign In</button>
+    <button
+      ion-button color="secondary" (click)="register()">Register</button>
+
+  </div>
+</ion-content>

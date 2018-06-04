@@ -1,5 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
+import { RegisterPage} from "../register/register";
 
 @Component({
   selector: 'page-home',
@@ -33,6 +34,10 @@ export class HomePage {
       alert.present();
     }
 
+  }
+
+  register(){
+    this.navCtrl.push(RegisterPage);
   }
 
 }

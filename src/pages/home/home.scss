@@ -1,3 +1,11 @@
 page-home {
-
+  #topButtons{
+    //equally spacing buttons
+    display: flex;
+    flex-direction: row;
+  }
+  #topButtons button{
+    //weight of spacing buttons
+    flex: 1;
+  }
 }
