@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
-import {FirstPage} from "../first/first";
+import {Component, ViewChild} from '@angular/core';
+import { NavController, AlertController } from 'ionic-angular';
 
 @Component({
   selector: 'page-home',
@@ -8,12 +7,32 @@ import {FirstPage} from "../first/first";
 })
 export class HomePage {
 
-  constructor(public navCtrl: NavController) {
+  @ViewChild('username') usr;
+  @ViewChild('password') pwd
+  constructor(public navCtrl: NavController ,
+              public alertCtrl: AlertController) {
 
   }
 
-  openFirstPage(){
-    this.navCtrl.push(FirstPage);
+  signIn(){
+    console.log(this.usr.value);
+    console.log(this.pwd.value);
+    if(this.usr.value != "" && this.pwd.value != ""){
+      const alert = this.alertCtrl.create({
+        title: 'Success',
+        subTitle: 'You have successfully signed in',
+        buttons: ['Next']
+      });
+      alert.present();
+    } else {
+      const alert = this.alertCtrl.create({
+        title: 'Failed',
+        subTitle: 'Missing username/password!',
+        buttons: ['Back']
+      });
+      alert.present();
+    }
+
   }
 
 }
