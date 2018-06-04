@@ -1,0 +1,8 @@
+{
+  "name": "PlayIt",
+  "app_id": "21e68811",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}
