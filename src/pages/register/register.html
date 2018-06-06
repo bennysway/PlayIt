@@ -17,13 +17,13 @@
   <ion-list>
 
     <ion-item>
-      <ion-label floating>Display Name</ion-label>
-      <ion-input type="text" #myName></ion-input>
+      <ion-label floating>Username</ion-label>
+      <ion-input type="text" #username></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label floating>Username</ion-label>
-      <ion-input type="text" #username></ion-input>
+      <ion-label floating>Email</ion-label>
+      <ion-input type="text" #email></ion-input>
     </ion-item>
 
     <ion-item>
@@ -35,6 +35,6 @@
 
   <div padding>
     <button
-      block ion-button color="primary" (click)="signUp()">Sign Up</button>
+      block ion-button color="secondary" (click)="signUp()">Sign Up</button>
   </div>
 </ion-content>

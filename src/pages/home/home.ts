@@ -1,6 +1,9 @@
 import {Component, ViewChild} from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
 import { RegisterPage} from "../register/register";
+import { AngularFireAuth } from 'angularfire2/auth';
+import {PlayerPage} from "../player/player";
+
 
 @Component({
   selector: 'page-home',
@@ -8,36 +11,83 @@ import { RegisterPage} from "../register/register";
 })
 export class HomePage {
 
-  @ViewChild('username') usr;
-  @ViewChild('password') pwd
+  @ViewChild('email') eml;
+  @ViewChild('password') pwd;
   constructor(public navCtrl: NavController ,
-              public alertCtrl: AlertController) {
+              public alertCtrl: AlertController,
+              private fire: AngularFireAuth) {
 
   }
 
   signIn(){
-    console.log(this.usr.value);
-    console.log(this.pwd.value);
-    if(this.usr.value != "" && this.pwd.value != ""){
-      const alert = this.alertCtrl.create({
-        title: 'Success',
-        subTitle: 'You have successfully signed in',
-        buttons: ['Next']
-      });
-      alert.present();
+    if(this.eml.value != "" && this.pwd.value != ""){
+      this.fire.auth.signInWithEmailAndPassword(this.eml.value, this.pwd.value)
+        .then(data =>{
+          this.signInSuccess();
+        })
+        .catch(error =>{
+          console.log(error.code);
+          this.signInFail(error.code);
+        });
     } else {
-      const alert = this.alertCtrl.create({
-        title: 'Failed',
-        subTitle: 'Missing username/password!',
-        buttons: ['Back']
-      });
-      alert.present();
+      this.credentialEmpty();
     }
 
   }
 
   register(){
     this.navCtrl.push(RegisterPage);
+  }
+
+  signInSuccess() {
+    const alert = this.alertCtrl.create({
+      title: 'Success',
+      message: 'Welcome to PlayIt',
+      buttons: [
+        {
+          text : 'Start',
+          handler : () => {
+           this.navCtrl.setRoot(PlayerPage);
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  signInFail(code : string) {
+    let message;
+    switch (code){
+      case 'auth/invalid-email':
+        message = 'You have entered an invalid email address';
+        break;
+      case 'auth/user-not-found':
+        message = 'Email does not exist. Please register';
+        break;
+      case 'auth/wrong-password':
+        message = 'You entered a wrong password';
+        break;
+      case 'auth/user-disabled':
+        message = 'Account is blocked. Please use another account or register';
+        break;
+      default:
+        message = "We could not sign you in :( Check your for mistypes in your email or password";
+    }
+    const alert = this.alertCtrl.create({
+      title: 'Failed',
+      message: message,
+      buttons: ['Back'],
+    });
+    alert.present();
+  }
+
+  credentialEmpty() {
+    const alert = this.alertCtrl.create({
+      title: 'Failed',
+      message: 'Empty email or password',
+      buttons: ['Back']
+    });
+    alert.present();
   }
 
 }
