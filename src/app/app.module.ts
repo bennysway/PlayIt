@@ -6,8 +6,8 @@ import { StatusBar } from '@ionic-native/status-bar';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import {RegisterPage} from "../pages/register/register";
-import {PlayerPage} from "../pages/player/player";
+import { RegisterPage } from "../pages/register/register";
+import { PlayerPage } from "../pages/player/player";
 //FireBase
 import {AngularFireModule} from "angularfire2";
 import { AngularFireAuthModule } from 'angularfire2/auth';

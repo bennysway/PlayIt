@@ -21,7 +21,7 @@
 
     <ion-item>
       <ion-label floating>Password</ion-label>
-      <ion-input type="password" #password></ion-input>
+      <ion-input type="password" (keyup.enter)="signIn()" #password></ion-input>
     </ion-item>
 
   </ion-list>
@@ -31,6 +31,8 @@
       ion-button color="primary" (click)="signIn()">Sign In</button>
     <button
       ion-button color="secondary" (click)="register()">Register</button>
+    <button
+      ion-button color="secondary" (click)="test()">Test</button>
 
   </div>
 </ion-content>

@@ -39,6 +39,10 @@ export class HomePage {
     this.navCtrl.push(RegisterPage);
   }
 
+  test(){
+    this.navCtrl.setRoot(PlayerPage);
+  }
+
   signInSuccess() {
     const alert = this.alertCtrl.create({
       title: 'Success',
