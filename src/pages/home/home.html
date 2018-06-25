@@ -1,5 +1,12 @@
 <ion-header>
   <ion-navbar>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="test()">
+        <ion-icon name="analytics"></ion-icon>
+      </button>
+    </ion-buttons>
+
     <ion-title>
       Welcome
     </ion-title>
@@ -26,13 +33,23 @@
 
   </ion-list>
 
-  <div padding id="topButtons">
-    <button
-      ion-button color="primary" (click)="signIn()">Sign In</button>
-    <button
-      ion-button color="secondary" (click)="register()">Register</button>
-    <button
-      ion-button color="secondary" (click)="test()">Test</button>
-
+  <div padding margin class="native-sign-in-row">
+    <button ion-button full color="dark" round (click)="signIn()">Sign In</button>
+    <button ion-button full color="dark" round (click)="register()">Register</button>
+  </div>
+  <div padding>
+    Or Sign In with:
+  </div>
+  <div class="external-sign-in">
+    <button ion-button  color="facebook" round (click)="facebookSignIn()">  <ion-icon name="logo-facebook"></ion-icon></button>
+    <button ion-button color="google" round (click)="googleSignIn()"><ion-icon name="logo-google"></ion-icon></button>
+    <button ion-button  color="twitter" round><ion-icon name="logo-twitter"></ion-icon></button>
   </div>
 </ion-content>
+
+<ion-footer no-shadow>
+  <ion-toolbar position="bottom">
+    Enjoy PlayIt on your {{device_name}}
+    <div float-right> <ion-icon name={{device_icon}}></ion-icon></div>
+  </ion-toolbar>
+</ion-footer>

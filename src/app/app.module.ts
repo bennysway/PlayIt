@@ -3,14 +3,19 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-
+//FireBase
+import {AngularFireModule} from "angularfire2";
+import { AngularFireAuthModule } from 'angularfire2/auth';
+//Providers
+import { Facebook } from "@ionic-native/facebook";
+import { SaltyProvider } from '../providers/salty/salty';
+import { HttpClientModule } from "@angular/common/http";
+//pages
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { RegisterPage } from "../pages/register/register";
 import { PlayerPage } from "../pages/player/player";
-//FireBase
-import {AngularFireModule} from "angularfire2";
-import { AngularFireAuthModule } from 'angularfire2/auth';
+import { TestPage } from "../pages/test/test";
 
 const firebaseAuth = {
     apiKey: "AIzaSyArVjCC2uKXgdiVWhXhoz0pTpnDDB_GDPY",
@@ -25,25 +30,30 @@ const firebaseAuth = {
     MyApp,
     HomePage,
     RegisterPage,
-    PlayerPage
+    PlayerPage,
+    TestPage
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseAuth),
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    HttpClientModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     HomePage,
     RegisterPage,
-    PlayerPage
+    PlayerPage,
+    TestPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    Facebook,
+    SaltyProvider
   ]
 })
 export class AppModule {}
