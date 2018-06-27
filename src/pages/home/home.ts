@@ -2,12 +2,13 @@ import {Component, ViewChild} from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
 import { RegisterPage} from "../register/register";
 import { AngularFireAuth } from 'angularfire2/auth';
+import { AngularFireDatabase} from "angularfire2/database";
 import {PlayerPage} from "../player/player";
 import { Facebook } from '@ionic-native/facebook';
 import { Platform } from 'ionic-angular';
 import { TestPage} from "../test/test";
-import * as firebase from "firebase"; firebase;
-
+import * as firebase from "firebase";
+import { SaltyProvider} from "../../providers/salty/salty";
 
 @Component({
   selector: 'page-home',
@@ -26,7 +27,9 @@ export class HomePage {
               public alertCtrl: AlertController,
               private fire: AngularFireAuth,
               private fb: Facebook,
-              public plt: Platform) {
+              public plt: Platform,
+              public db: AngularFireDatabase,
+              private salt: SaltyProvider) {
     this.facebookAutoSignIn();
     this.checkDevice();
   }
@@ -83,21 +86,35 @@ export class HomePage {
       .catch(e => console.log(e));
   }
   facebookSignIn(){
-    this.fb.login(['public_profile', 'user_friends', 'email'])
-      .then(res => {
-        if(res.status === "connected") {
-          this.isLoggedIn = true;
-          this.getUserDetail(res.authResponse.userID);
-          this.signInSuccess();
-        } else {
-          this.isLoggedIn = false;
-          this.signInFail(res.status);
-        }
-      })
-      .catch(e => {
-        console.log('Error logging into Facebook', e)
-        this.signInFail(e);
-      });
+    if(this.plt.is("mobile")){
+      this.fb.login(['public_profile', 'user_friends', 'email'])
+        .then(res => {
+          if(res.status === "connected") {
+            this.isLoggedIn = true;
+            this.getUserDetail(res.authResponse.userID);
+            //Todo
+            this.signInSuccess();
+          } else {
+            this.isLoggedIn = false;
+            this.signInFail(res.status);
+          }
+        })
+        .catch(e => {
+          console.log('Error logging into Facebook', e);
+          this.signInFail(e);
+        });
+    } else {
+      let provider = new firebase.auth.FacebookAuthProvider();
+      this.fire.auth.signInWithPopup(provider)
+        .then(data =>{
+          let token:string = this.salt.salter(this.fire.auth.currentUser.email);
+        })
+        .catch(error =>{
+
+        });
+
+    }
+
   }
   facebookSignOut(){
     this.fb.logout()
@@ -130,6 +147,7 @@ export class HomePage {
 
   test(){
     this.navCtrl.push(TestPage);
+
   }
 
   signInSuccess() {

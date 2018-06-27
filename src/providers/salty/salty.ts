@@ -31,5 +31,10 @@ export class SaltyProvider {
       salted += this.numAlpha(this.alphaNum(token.charAt(i)) + magic * 7);
     return salted;
   }
+  spicer(token: string, provider: string) : string {
+    let salted = this.salter(token);
+    salted = provider + salted;
+    return this.salter(salted);
+  }
 
 }

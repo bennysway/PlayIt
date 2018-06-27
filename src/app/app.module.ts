@@ -6,6 +6,9 @@ import { StatusBar } from '@ionic-native/status-bar';
 //FireBase
 import {AngularFireModule} from "angularfire2";
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFireDatabaseModule } from "angularfire2/database";
+import { masterFirebaseConfig } from './api-keys';
+
 //Providers
 import { Facebook } from "@ionic-native/facebook";
 import { SaltyProvider } from '../providers/salty/salty';
@@ -17,13 +20,13 @@ import { RegisterPage } from "../pages/register/register";
 import { PlayerPage } from "../pages/player/player";
 import { TestPage } from "../pages/test/test";
 
-const firebaseAuth = {
-    apiKey: "AIzaSyArVjCC2uKXgdiVWhXhoz0pTpnDDB_GDPY",
-    authDomain: "playit-45607.firebaseapp.com",
-    databaseURL: "https://playit-45607.firebaseio.com",
-    projectId: "playit-45607",
-    storageBucket: "playit-45607.appspot.com",
-    messagingSenderId: "837369162014"
+export const firebaseAuth = {
+    apiKey: masterFirebaseConfig.apiKey,
+    authDomain: masterFirebaseConfig.authDomain,
+    databaseURL: masterFirebaseConfig.databaseURL,
+    projectId: masterFirebaseConfig.projectId,
+    storageBucket: masterFirebaseConfig.storageBucket,
+    messagingSenderId: masterFirebaseConfig.messagingSenderId
 };
 @NgModule({
   declarations: [
@@ -38,7 +41,8 @@ const firebaseAuth = {
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseAuth),
     AngularFireAuthModule,
-    HttpClientModule
+    AngularFireDatabaseModule,
+    HttpClientModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [

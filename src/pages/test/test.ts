@@ -1,6 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { SaltyProvider } from "../../providers/salty/salty";
+import {AngularFireDatabase, AngularFireList} from "angularfire2/database";
 
 
 /**
@@ -17,21 +18,21 @@ import { SaltyProvider } from "../../providers/salty/salty";
 })
 export class TestPage {
 
-  salt_result: string = "saltless";
-  spice_result: string = "spiceless";
+  salt_result: string = "";
+  spice_result:string = "";
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
-              private salt: SaltyProvider) {
+              private salt: SaltyProvider,
+              public db: AngularFireDatabase) {;
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad TestPage');
   }
 
-  makeSalt(token: string, num: number){
-    console.log(token,num);
-    this.salt_result = this.salt.salter(token);
-    this.spice_result = this.salt.salter(this.salt_result);
+  makeSalt(){
+    this.salt_result = "yass";
+    this.spice_result = "but chill...";
   }
 
 }
