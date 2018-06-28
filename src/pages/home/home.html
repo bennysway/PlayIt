@@ -41,9 +41,10 @@
     Or Sign In with:
   </div>
   <div class="external-sign-in">
-    <button ion-button  color="facebook" round (click)="facebookSignIn()">  <ion-icon name="logo-facebook"></ion-icon></button>
-    <button ion-button color="google" round (click)="googleSignIn()"><ion-icon name="logo-google"></ion-icon></button>
-    <button ion-button  color="twitter" round><ion-icon name="logo-twitter"></ion-icon></button>
+    <button ion-button  color="facebook" round (click)="signInWithProvider('Facebook')">  <ion-icon name="logo-facebook"></ion-icon></button>
+    <button ion-button color="google" round (click)="signInWithProvider('Google')"><ion-icon name="logo-google"></ion-icon></button>
+    <button ion-button  color="twitter" round (click)="signInWithProvider('Twitter')"><ion-icon name="logo-twitter"></ion-icon></button>
+    <button ion-button  color="github" round (click)="signInWithProvider('GitHub')"><ion-icon name="logo-github"></ion-icon></button>
   </div>
 </ion-content>
 

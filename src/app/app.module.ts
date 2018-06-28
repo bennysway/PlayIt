@@ -19,6 +19,7 @@ import { HomePage } from '../pages/home/home';
 import { RegisterPage } from "../pages/register/register";
 import { PlayerPage } from "../pages/player/player";
 import { TestPage } from "../pages/test/test";
+import { UserServiceProvider } from '../providers/user-service/user-service';
 
 export const firebaseAuth = {
     apiKey: masterFirebaseConfig.apiKey,
@@ -57,7 +58,8 @@ export const firebaseAuth = {
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     Facebook,
-    SaltyProvider
+    SaltyProvider,
+    UserServiceProvider
   ]
 })
 export class AppModule {}

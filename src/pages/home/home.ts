@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import { NavController, AlertController } from 'ionic-angular';
+import { NavController, AlertController, ToastController } from 'ionic-angular';
 import { RegisterPage} from "../register/register";
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase} from "angularfire2/database";
@@ -25,13 +25,14 @@ export class HomePage {
   device_icon: string = "none";
   constructor(public navCtrl: NavController ,
               public alertCtrl: AlertController,
+              public toast: ToastController,
               private fire: AngularFireAuth,
               private fb: Facebook,
               public plt: Platform,
               public db: AngularFireDatabase,
               private salt: SaltyProvider) {
-    this.facebookAutoSignIn();
     this.checkDevice();
+    this.signInAutomatically();
   }
 
   signIn(){
@@ -49,15 +50,55 @@ export class HomePage {
     }
 
   }
+  signInWithProvider(method: string){
+    let provider;
+    this.showToast("Signing in with " + method + " ... ");
+    switch (method){
+      case "Facebook":
+        provider = new firebase.auth.FacebookAuthProvider();
+        break;
+      case "Google":
+        provider = new firebase.auth.GoogleAuthProvider();
+        break;
+      case "Twitter":
+        provider = new firebase.auth.TwitterAuthProvider();
+        break;
+      case "GitHub":
+        provider = new firebase.auth.GithubAuthProvider();
+        break;
+      default:
+        provider = new firebase.auth.GoogleAuthProvider();
+    }
+    firebase.auth().signInWithRedirect(provider).then(function() {
+      return firebase.auth().getRedirectResult();
+    }).then(result => {
+      this.showToast("Signed in :)");
+      console.log("Signed in with " + method);
+    }).catch(error =>{
+      this.showToast("Could not sign in with " + method);
+      console.log(error.message);
+    });
+  }
+  signInAutomatically(){
+    firebase.auth().getRedirectResult().then(result => {
+      if (result.credential) {
+        console.log("Succeful login.");
+        this.showToast("Signed in :)");
+      }
+    }).catch(error => {
+      this.showToast("Could not sign in");
+      console.log(error.message);
+    });
+  }
   checkDevice(){
     if(this.plt.is("mobile")){
       if(this.plt.is("android")){
         this.device_name = "Android";
         this.device_icon = "logo-android";
       }
-      if(this.plt.is("iphone")){
+      if(this.plt.is("ios")){
         this.device_name = "iPhone";
-        this.device_icon = "logo_apple";
+        this.device_icon = "logo-apple";
       }
       if(this.plt.is("windows")){
         this.device_name = "Windows";
@@ -103,11 +144,12 @@ export class HomePage {
           console.log('Error logging into Facebook', e);
           this.signInFail(e);
         });
-    } else {
+    }
+    else {
       let provider = new firebase.auth.FacebookAuthProvider();
       this.fire.auth.signInWithPopup(provider)
         .then(data =>{
-          let token:string = this.salt.salter(this.fire.auth.currentUser.email);
+          this.showToast(this.fire.auth.currentUser.email);
         })
         .catch(error =>{
 
@@ -125,8 +167,8 @@ export class HomePage {
   getUserDetail(userid) {
     this.fb.api("/"+userid+"/?fields=id,email,name,picture,gender",["public_profile"])
       .then(res => {
-        console.log(res);
         this.users = res;
+        this.showToast(this.users.email);
       })
       .catch(e => {
         console.log(e);
@@ -138,7 +180,22 @@ export class HomePage {
 
   //Google
   googleSignIn(){
-
+    this.showToast("Signing in with Google");
+    let provider = new firebase.auth.GoogleAuthProvider();
+    this.fire.auth.signInWithRedirect(provider)
+      .then(() =>{
+        this.fire.auth.getRedirectResult()
+          .then(data =>{
+            this.showToast(data.user.email);
+            console.log("Done");
+          })
+          .catch(error => {
+            this.showToast(error.message);
+          });
+      })
+      .catch(error => {
+      this.showToast(error.message);
+    });
   }
 
   register(){
@@ -149,6 +206,15 @@ export class HomePage {
     this.navCtrl.push(TestPage);
 
   }
+  showToast(text: string) {
+    let toast = this.toast.create({
+      message: text,
+      duration: 2000,
+      position: 'top'
+    });
+    toast.present(toast);
+  }
+
 
   signInSuccess() {
     const alert = this.alertCtrl.create({
