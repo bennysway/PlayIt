@@ -1,44 +1,57 @@
-import {Component, ViewChild} from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController, AlertController, ToastController } from 'ionic-angular';
-import { RegisterPage} from "../register/register";
+import { RegisterPage } from "../register/register";
 import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFireDatabase} from "angularfire2/database";
-import {PlayerPage} from "../player/player";
-import { Facebook } from '@ionic-native/facebook';
+import { PlayerPage} from "../player/player";
 import { Platform } from 'ionic-angular';
-import { TestPage} from "../test/test";
 import * as firebase from "firebase";
-import { SaltyProvider} from "../../providers/salty/salty";
+//Providers
+import { GooglePlus } from "@ionic-native/google-plus";
+import { UtilProvider } from "../../providers/util/util";
+import { googlePlusConfig } from "../../app/api-keys";
+import AuthCredential = firebase.auth.AuthCredential;
+import {LinkAccountPage} from "../link-account/link-account";
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
-
 })
 export class HomePage {
-
   @ViewChild('email') eml;
   @ViewChild('password') pwd;
-  isLoggedIn:boolean = false;
+  isLoggedIn: boolean = false;
+  credential: AuthCredential;
   users: any;
+  link:boolean = false;
+  link_to = "";
   device_name: string = "none";
   device_icon: string = "none";
   constructor(public navCtrl: NavController ,
               public alertCtrl: AlertController,
-              public toast: ToastController,
               private fire: AngularFireAuth,
-              private fb: Facebook,
-              public plt: Platform,
-              public db: AngularFireDatabase,
-              private salt: SaltyProvider) {
+              private plt: Platform,
+              private util: UtilProvider,
+              private googlePlus : GooglePlus) {
     this.checkDevice();
-    this.signInAutomatically();
+    this.util.store.get('link').then(result => {
+      this.link = result;
+      this.util.store.get('link-to').then(data =>{ this.link_to = data;});
+    }).then(() => {
+      this.signInAutomatically();
+
+    }).catch(() => {
+      this.signInAutomatically();
+    })
   }
 
   signIn(){
+    this.util.showToast("Signing in with email ... ");
+    this.util.store.set('link-from',"Email");
     if(this.eml.value != "" && this.pwd.value != ""){
       this.fire.auth.signInWithEmailAndPassword(this.eml.value, this.pwd.value)
         .then(data =>{
+          this.util.store.set('eml', this.eml.value);
+          this.util.store.set('pwd', this.pwd.value);
           this.signInSuccess();
         })
         .catch(error =>{
@@ -46,13 +59,14 @@ export class HomePage {
           this.signInFail(error.code);
         });
     } else {
-      this.credentialEmpty();
+      this.util.showToast("One or more of the credentials are empty");
     }
 
   }
   signInWithProvider(method: string){
     let provider;
-    this.showToast("Signing in with " + method + " ... ");
+    this.util.showToast("Signing in with " + method + " ... ");
+    this.util.store.set('link-from',method);
     switch (method){
       case "Facebook":
         provider = new firebase.auth.FacebookAuthProvider();
@@ -69,25 +83,57 @@ export class HomePage {
       default:
         provider = new firebase.auth.GoogleAuthProvider();
     }
-    firebase.auth().signInWithRedirect(provider).then(function() {
-      return firebase.auth().getRedirectResult();
-    }).then(result => {
-      this.showToast("Signed in :)");
-      console.log("Signed in with " + method);
-    }).catch(error =>{
-      this.showToast("Could not sign in with " + method);
-      console.log(error.message);
-    });
+    if(this.plt.is('cordova')){
+      switch(method){
+        case "Google":
+          this.googleSignIn().then(() => this.signInSuccess()).catch(error => this.signInFail(error.message));
+          break;
+        default:
+          firebase.auth().signInWithPopup(provider)
+            .then(() =>{
+              this.util.showToast("Signed in :)");
+              console.log("Signed in with " + method);
+              this.signInSuccess();
+            })
+            .catch(error => {
+              this.util.showToast("Could not sign in with " + method);
+              console.log(error.message);
+              console.log(error.code);
+              this.signInFail(error.code);
+            });
+          break;
+      }
+    }
+    else{
+      firebase.auth().signInWithRedirect(provider).then(function() {
+        return firebase.auth().getRedirectResult();
+      }).then(data => {
+        this.util.showToast("Signed in :)");
+        console.log("Signed in with " + method)
+        this.signInSuccess();
+      }).catch(error =>{
+        this.util.showToast("Could not sign in with " + method);
+        console.log(error.message);
+        console.log(error.code);
+        this.signInFail(error.code);
+      });
+    }
   }
   signInAutomatically(){
     firebase.auth().getRedirectResult().then(result => {
       if (result.credential) {
-        console.log("Succeful login.");
-        this.showToast("Signed in :)");
+        firebase.auth().onAuthStateChanged(user => {
+          if (user) {
+            this.util.showToast("Successful Sign In 😊");
+            this.signInSuccess();
+          }
+        });
       }
     }).catch(error => {
-      this.showToast("Could not sign in");
+      this.util.showToast("Could not sign in");
       console.log(error.message);
+      console.log(error.code);
+      this.signInFail(error.code);
     });
   }
   checkDevice(){
@@ -109,93 +155,20 @@ export class HomePage {
       this.device_name = "Browser";
       this.device_icon = "browsers";
     }
-
   }
-
-  //Facebook
-  facebookAutoSignIn(){
-    this.fb.getLoginStatus()
-      .then(res => {
-        console.log(res.status);
-        if(res.status === "connect") {
-          this.isLoggedIn = true;
-          this.signInSuccess();
-        } else {
-          this.isLoggedIn = false;
-        }
-      })
-      .catch(e => console.log(e));
-  }
-  facebookSignIn(){
-    if(this.plt.is("mobile")){
-      this.fb.login(['public_profile', 'user_friends', 'email'])
-        .then(res => {
-          if(res.status === "connected") {
-            this.isLoggedIn = true;
-            this.getUserDetail(res.authResponse.userID);
-            //Todo
-            this.signInSuccess();
-          } else {
-            this.isLoggedIn = false;
-            this.signInFail(res.status);
-          }
-        })
-        .catch(e => {
-          console.log('Error logging into Facebook', e);
-          this.signInFail(e);
-        });
-    }
-    else {
-      let provider = new firebase.auth.FacebookAuthProvider();
-      this.fire.auth.signInWithPopup(provider)
-        .then(data =>{
-          this.showToast(this.fire.auth.currentUser.email);
-        })
-        .catch(error =>{
-
-        });
-
-    }
-
-  }
-  facebookSignOut(){
-    this.fb.logout()
-      .then( res => this.isLoggedIn = false)
-      .catch(e => console.log('Error logout from Facebook', e));
-
-  }
-  getUserDetail(userid) {
-    this.fb.api("/"+userid+"/?fields=id,email,name,picture,gender",["public_profile"])
-      .then(res => {
-        this.users = res;
-        this.showToast(this.users.email);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  }
-  /*TODO:
-  *Don't forget to implement logout
-  */
-
   //Google
-  googleSignIn(){
-    this.showToast("Signing in with Google");
-    let provider = new firebase.auth.GoogleAuthProvider();
-    this.fire.auth.signInWithRedirect(provider)
-      .then(() =>{
-        this.fire.auth.getRedirectResult()
-          .then(data =>{
-            this.showToast(data.user.email);
-            console.log("Done");
-          })
-          .catch(error => {
-            this.showToast(error.message);
-          });
-      })
-      .catch(error => {
-      this.showToast(error.message);
-    });
+  async googleSignIn(): Promise<void>{
+    try{
+      const gPlusUser = await this.googlePlus.login({
+        'webClientId' : googlePlusConfig.webClientId,
+        'offline' : true,
+        'scopes' : 'profile,email'
+      });
+      return await firebase.auth().signInWithCredential(firebase.auth.GoogleAuthProvider.credential(gPlusUser.idToken))
+    }
+    catch(error) {
+      console.log(error);
+    }
   }
 
   register(){
@@ -203,68 +176,68 @@ export class HomePage {
   }
 
   test(){
-    this.navCtrl.push(TestPage);
-
+    this.link = false;
+    this.util.store.set('link',false);
   }
-  showToast(text: string) {
-    let toast = this.toast.create({
-      message: text,
-      duration: 2000,
-      position: 'top'
-    });
-    toast.present(toast);
-  }
-
-
   signInSuccess() {
-    const alert = this.alertCtrl.create({
-      title: 'Success',
-      message: 'Welcome to PlayIt',
-      buttons: [
-        {
-          text : 'Start',
-          handler : () => {
-           this.navCtrl.setRoot(PlayerPage);
-          }
-        }
-      ]
-    });
-    alert.present();
+    if(this.link){
+      this.util.showToast("Ready to link...");
+      this.util.store.remove('link');
+      this.navCtrl.push(LinkAccountPage);
+    }
+    else{
+      this.util.store.remove('link');
+      this.util.store.remove('link-to');
+      this.util.store.remove('link-from');
+      this.util.store.remove('eml');
+      this.util.store.remove('pwd');
+      this.navCtrl.setRoot(PlayerPage);
+    }
   }
-
   signInFail(code : string) {
     let message;
     switch (code){
       case 'auth/invalid-email':
-        message = 'You have entered an invalid email address';
+        message = 'You have entered an invalid email address😞';
+        this.util.showToast(message);
         break;
       case 'auth/user-not-found':
-        message = 'Email does not exist. Please register';
+        message = 'Email does not exist. Please register or easily use the options below';
+        this.util.showToast(message);
         break;
       case 'auth/wrong-password':
-        message = 'You entered a wrong password';
+        message = 'You entered a wrong password😞';
+        this.util.showToast(message);
         break;
       case 'auth/user-disabled':
-        message = 'Account is blocked. Please use another account or register';
+        message = 'This account is blocked 😞. Please use another account or register';
         break;
+      case 'auth/account-exists-with-different-credential':
+        let title = "Existing but different Sign In method found";
+        message = 'Do you want to link to another signing method?';
+        let accept = "Definitely";
+        let deny = "Not now";
+        this.util.showAlert(title,message,accept,deny).then(result =>{
+          console.log(result);
+          if(result){
+            this.util.store.set('link',true);
+            var mLink;
+            this.util.store.get('link-from').then(data => {mLink = data;})
+              .then(() =>{
+                this.util.store.set('link-to',mLink);
+                this.link_to = mLink;
+                this.link = true;
+              });
+          } else {
+            this.util.store.remove('link');
+            this.link = false;
+          }
+        }).catch(() => {
+          this.util.store.remove('link');
+          this.link = false;
+        });
       default:
         message = "We could not sign you in :( Check your for mistypes in your email or password";
     }
-    const alert = this.alertCtrl.create({
-      title: 'Failed',
-      message: message,
-      buttons: ['Back'],
-    });
-    alert.present();
   }
-
-  credentialEmpty() {
-    const alert = this.alertCtrl.create({
-      title: 'Failed',
-      message: 'Empty email or password',
-      buttons: ['Back']
-    });
-    alert.present();
-  }
-
 }

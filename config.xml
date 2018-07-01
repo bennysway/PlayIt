@@ -3,7 +3,7 @@
     <name>PlayIt</name>
     <description>Stream music, share playlists rate, and be your own DJ</description>
     <author email="farai.fatso@gmail.com" href="http://faraifatso.wixsite.com/bennysway">Clip Seven</author>
-    <content original-src="index.html" src="http://10.211.2.117:8102" />
+    <content original-src="index.html" src="http://10.211.2.117:8100" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -93,13 +93,13 @@
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
     <plugin name="cordova-plugin-ionic-webview" spec="^1.1.19" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
-    <plugin name="cordova-plugin-facebook4" spec="^2.1.0">
-        <variable name="APP_ID" value="1849955215062488" />
-        <variable name="APP_NAME" value="PlayIt" />
-        <variable name="ANDROID_SDK_VERSION" value="4.+" />
-    </plugin>
     <plugin name="cordova-plugin-buildinfo" spec="^2.0.1" />
     <plugin name="cordova-universal-links-plugin" spec="^1.2.1" />
     <plugin name="cordova-plugin-browsertab" spec="^0.2.0" />
     <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
+    <plugin name="cordova-plugin-googleplus" spec="^5.3.0">
+        <variable name="REVERSED_CLIENT_ID" value="com.googleusercontent.apps.837369162014-al1nt2m7lu4deu3d7ssa77if88mtbsc7" />
+        <variable name="WEB_APPLICATION_CLIENT_ID" value="837369162014-brb23ug3fme41mo6ia8rp70u42bfctdc.apps.googleusercontent.com" />
+    </plugin>
+    <plugin name="cordova-sqlite-storage" spec="^2.3.2" />
 </widget>

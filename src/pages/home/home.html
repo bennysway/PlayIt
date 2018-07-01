@@ -1,32 +1,32 @@
 <ion-header>
-  <ion-navbar>
-
+  <ion-navbar >
+    <!-- LEFT BUTTON -->
     <ion-buttons end>
       <button ion-button icon-only (click)="test()">
         <ion-icon name="analytics"></ion-icon>
       </button>
     </ion-buttons>
-
+    <!-- TITLE -->
     <ion-title>
       Welcome
     </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <p>
+<ion-content padding style="background-color: #ff767e">
+  <p style="color: white; font-size: x-large; text-align: center">
     Stream all music.
     Be your own DJ.
     PlayIt
   </p>
   <ion-list>
 
-    <ion-item>
+    <ion-item style="background-color: #ff767e; color: #fff;">
       <ion-label floating>Email</ion-label>
       <ion-input type="text" #email></ion-input>
     </ion-item>
 
-    <ion-item>
+    <ion-item  style="background-color: #ff767e; color: #fff;" >
       <ion-label floating>Password</ion-label>
       <ion-input type="password" (keyup.enter)="signIn()" #password></ion-input>
     </ion-item>
@@ -37,7 +37,7 @@
     <button ion-button full color="dark" round (click)="signIn()">Sign In</button>
     <button ion-button full color="dark" round (click)="register()">Register</button>
   </div>
-  <div padding>
+  <div padding style="color: white">
     Or Sign In with:
   </div>
   <div class="external-sign-in">
@@ -45,6 +45,11 @@
     <button ion-button color="google" round (click)="signInWithProvider('Google')"><ion-icon name="logo-google"></ion-icon></button>
     <button ion-button  color="twitter" round (click)="signInWithProvider('Twitter')"><ion-icon name="logo-twitter"></ion-icon></button>
     <button ion-button  color="github" round (click)="signInWithProvider('GitHub')"><ion-icon name="logo-github"></ion-icon></button>
+  </div>
+  <div *ngIf="link" style="color: #6cc644">
+    <br/>
+    <ion-icon name="link"></ion-icon> <br/>
+    {{link_to}} link mode on
   </div>
 </ion-content>
 

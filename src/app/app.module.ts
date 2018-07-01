@@ -3,6 +3,7 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
+import { IonicStorageModule } from "@ionic/storage";
 //FireBase
 import {AngularFireModule} from "angularfire2";
 import { AngularFireAuthModule } from 'angularfire2/auth';
@@ -10,9 +11,9 @@ import { AngularFireDatabaseModule } from "angularfire2/database";
 import { masterFirebaseConfig } from './api-keys';
 
 //Providers
-import { Facebook } from "@ionic-native/facebook";
 import { SaltyProvider } from '../providers/salty/salty';
 import { HttpClientModule } from "@angular/common/http";
+import { GooglePlus } from "@ionic-native/google-plus";
 //pages
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -20,6 +21,9 @@ import { RegisterPage } from "../pages/register/register";
 import { PlayerPage } from "../pages/player/player";
 import { TestPage } from "../pages/test/test";
 import { UserServiceProvider } from '../providers/user-service/user-service';
+import { UtilProvider } from '../providers/util/util';
+import { QuickActionsPage } from "../pages/quick-actions/quick-actions";
+import { LinkAccountPage } from "../pages/link-account/link-account";
 
 export const firebaseAuth = {
     apiKey: masterFirebaseConfig.apiKey,
@@ -35,7 +39,9 @@ export const firebaseAuth = {
     HomePage,
     RegisterPage,
     PlayerPage,
-    TestPage
+    TestPage,
+    QuickActionsPage,
+    LinkAccountPage
   ],
   imports: [
     BrowserModule,
@@ -44,6 +50,7 @@ export const firebaseAuth = {
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     HttpClientModule,
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -51,15 +58,18 @@ export const firebaseAuth = {
     HomePage,
     RegisterPage,
     PlayerPage,
-    TestPage
+    TestPage,
+    QuickActionsPage,
+    LinkAccountPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    Facebook,
     SaltyProvider,
-    UserServiceProvider
+    UserServiceProvider,
+    GooglePlus,
+    UtilProvider,
   ]
 })
 export class AppModule {}

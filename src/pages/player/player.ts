@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { PopoverController } from "ionic-angular";
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { QuickActionsPage } from "../quick-actions/quick-actions";
 
 /**
  * Generated class for the PlayerPage page.
@@ -15,11 +17,20 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class PlayerPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              private popOver: PopoverController) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad PlayerPage');
+  }
+
+  showPopOver(myEvent){
+    let pop = this.popOver.create(QuickActionsPage);
+    pop.present({
+      ev : myEvent
+    })
   }
 
 }
