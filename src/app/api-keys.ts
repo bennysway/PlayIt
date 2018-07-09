@@ -7,6 +7,6 @@ export var masterFirebaseConfig = {
     messagingSenderId: "837369162014"
   };
 export var googlePlusConfig = {
-  webClientId: "837369162014-al1nt2m7lu4deu3d7ssa77if88mtbsc7.apps.googleusercontent.com",
+  webClientId: "837369162014-3nobkg7mikfic4st44v61uj35gtnhsb4.apps.googleusercontent.com",
   reservedClientId: "com.googleusercontent.apps.837369162014-al1nt2m7lu4deu3d7ssa77if88mtbsc7"
 };

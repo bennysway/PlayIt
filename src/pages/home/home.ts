@@ -165,9 +165,9 @@ export class HomePage {
       const gPlusUser = await this.googlePlus.login({
         'webClientId' : googlePlusConfig.webClientId,
         'offline' : true,
-        'scopes' : 'profile,email'
+        'scopes' : 'email'
       });
-      return await firebase.auth().signInWithCredential(firebase.auth.GoogleAuthProvider.credential(gPlusUser.idToken));
+      return await this.fire.auth.signInWithCredential(firebase.auth.GoogleAuthProvider.credential(gPlusUser.idToken))
     }
     catch(error) {
       this.signInFail(error.code);
@@ -178,6 +178,7 @@ export class HomePage {
   async facebookSignIn(){
     try{
       const fbCredential = await this.facebook.login(['public_profile', 'user_friends', 'email']);
+      console.log('meme');
       return await firebase.auth().signInAndRetrieveDataWithCredential(firebase.auth.FacebookAuthProvider.credential(fbCredential.authResponse.accessToken));
     }
     catch(error) {
