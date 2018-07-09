@@ -1,7 +1,7 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component} from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { SaltyProvider } from "../../providers/salty/salty";
-import {AngularFireDatabase, AngularFireList} from "angularfire2/database";
+import {AngularFireDatabase} from "angularfire2/database";
 import { User} from "../../app/models/user-model";
 @IonicPage()
 @Component({

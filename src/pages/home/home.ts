@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, AlertController, ToastController } from 'ionic-angular';
+import { NavController} from 'ionic-angular';
 import { RegisterPage } from "../register/register";
 import { AngularFireAuth } from 'angularfire2/auth';
 import { PlayerPage} from "../player/player";
@@ -9,8 +9,8 @@ import * as firebase from "firebase";
 import { GooglePlus } from "@ionic-native/google-plus";
 import { UtilProvider } from "../../providers/util/util";
 import { googlePlusConfig } from "../../app/api-keys";
-import AuthCredential = firebase.auth.AuthCredential;
 import {LinkAccountPage} from "../link-account/link-account";
+import { Facebook } from "@ionic-native/facebook";
 
 @Component({
   selector: 'page-home',
@@ -19,19 +19,18 @@ import {LinkAccountPage} from "../link-account/link-account";
 export class HomePage {
   @ViewChild('email') eml;
   @ViewChild('password') pwd;
-  isLoggedIn: boolean = false;
-  credential: AuthCredential;
+  autoSignIn: boolean = false;
   users: any;
   link:boolean = false;
   link_to = "";
   device_name: string = "none";
   device_icon: string = "none";
   constructor(public navCtrl: NavController ,
-              public alertCtrl: AlertController,
               private fire: AngularFireAuth,
               private plt: Platform,
               private util: UtilProvider,
-              private googlePlus : GooglePlus) {
+              private googlePlus : GooglePlus,
+              private facebook : Facebook) {
     this.checkDevice();
     this.util.store.get('link').then(result => {
       this.link = result;
@@ -41,7 +40,11 @@ export class HomePage {
 
     }).catch(() => {
       this.signInAutomatically();
-    })
+    });
+    let physicalScreenWidth = window.screen.width * window.devicePixelRatio;
+    let physicalScreenHeight = window.screen.height * window.devicePixelRatio;
+    this.util.store.set('width',physicalScreenWidth);
+    this.util.store.set('height', physicalScreenHeight);
   }
 
   signIn(){
@@ -88,10 +91,12 @@ export class HomePage {
         case "Google":
           this.googleSignIn().then(() => this.signInSuccess()).catch(error => this.signInFail(error.message));
           break;
+        case "Facebook":
+          this.facebookSignIn().then(() => this.signInSuccess()).catch(error => this.signInFail(error.message));
+          break;
         default:
           firebase.auth().signInWithPopup(provider)
             .then(() =>{
-              this.util.showToast("Signed in :)");
               console.log("Signed in with " + method);
               this.signInSuccess();
             })
@@ -105,11 +110,10 @@ export class HomePage {
       }
     }
     else{
-      firebase.auth().signInWithRedirect(provider).then(function() {
+      firebase.auth().signInWithRedirect(provider).then(() =>{
         return firebase.auth().getRedirectResult();
       }).then(data => {
-        this.util.showToast("Signed in :)");
-        console.log("Signed in with " + method)
+        console.log("Signed in with " + method);
         this.signInSuccess();
       }).catch(error =>{
         this.util.showToast("Could not sign in with " + method);
@@ -124,7 +128,6 @@ export class HomePage {
       if (result.credential) {
         firebase.auth().onAuthStateChanged(user => {
           if (user) {
-            this.util.showToast("Successful Sign In 😊");
             this.signInSuccess();
           }
         });
@@ -164,9 +167,21 @@ export class HomePage {
         'offline' : true,
         'scopes' : 'profile,email'
       });
-      return await firebase.auth().signInWithCredential(firebase.auth.GoogleAuthProvider.credential(gPlusUser.idToken))
+      return await firebase.auth().signInWithCredential(firebase.auth.GoogleAuthProvider.credential(gPlusUser.idToken));
     }
     catch(error) {
+      this.signInFail(error.code);
+      console.log(error);
+    }
+  }
+
+  async facebookSignIn(){
+    try{
+      const fbCredential = await this.facebook.login(['public_profile', 'user_friends', 'email']);
+      return await firebase.auth().signInAndRetrieveDataWithCredential(firebase.auth.FacebookAuthProvider.credential(fbCredential.authResponse.accessToken));
+    }
+    catch(error) {
+      this.signInFail(error.code);
       console.log(error);
     }
   }
@@ -180,19 +195,29 @@ export class HomePage {
     this.util.store.set('link',false);
   }
   signInSuccess() {
-    if(this.link){
-      this.util.showToast("Ready to link...");
-      this.util.store.remove('link');
-      this.navCtrl.push(LinkAccountPage);
+    try{
+      console.log(firebase.auth().currentUser);
+      if(firebase.auth().currentUser){
+        this.util.showToast("Signed in 😊");
+        if(this.link){
+          this.util.showToast("Ready to link...");
+          this.util.store.remove('link');
+          this.navCtrl.push(LinkAccountPage);
+        }
+        else{
+          this.util.store.remove('link');
+          this.util.store.remove('link-to');
+          this.util.store.remove('link-from');
+          this.util.store.remove('eml');
+          this.util.store.remove('pwd');
+          this.navCtrl.setRoot(PlayerPage);
+        }
+      }
+    } catch (error){
+      this.signInFail(error.code);
     }
-    else{
-      this.util.store.remove('link');
-      this.util.store.remove('link-to');
-      this.util.store.remove('link-from');
-      this.util.store.remove('eml');
-      this.util.store.remove('pwd');
-      this.navCtrl.setRoot(PlayerPage);
-    }
+
+
   }
   signInFail(code : string) {
     let message;
@@ -209,8 +234,13 @@ export class HomePage {
         message = 'You entered a wrong password😞';
         this.util.showToast(message);
         break;
+      case 'auth/popup-closed-by-user':
+        message = "You kinda closed your sign in window😂";
+        this.util.showToast(message);
+        break;
       case 'auth/user-disabled':
         message = 'This account is blocked 😞. Please use another account or register';
+        this.util.showToast(message);
         break;
       case 'auth/account-exists-with-different-credential':
         let title = "Existing but different Sign In method found";
@@ -221,7 +251,7 @@ export class HomePage {
           console.log(result);
           if(result){
             this.util.store.set('link',true);
-            var mLink;
+            let mLink;
             this.util.store.get('link-from').then(data => {mLink = data;})
               .then(() =>{
                 this.util.store.set('link-to',mLink);
@@ -236,8 +266,10 @@ export class HomePage {
           this.util.store.remove('link');
           this.link = false;
         });
+        break;
       default:
-        message = "We could not sign you in :( Check your for mistypes in your email or password";
+        message = "We could not sign you in 😞 Try again later";
+        this.util.showToast(message);
     }
   }
 }

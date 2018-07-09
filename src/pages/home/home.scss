@@ -4,3 +4,10 @@ page-home {
 ion-icon {
   font-size: 30px; //Preferred size here
 }
+
+ion-content{
+  background: $app-background;
+}
+ion-alert{
+  color: white;
+}

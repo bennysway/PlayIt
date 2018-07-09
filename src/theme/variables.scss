@@ -35,16 +35,37 @@ $app-direction: ltr;
 
 $colors: (
   primary:    #ff004e,
-  secondary:  #3616bd,
+  secondary: #4b0004,
   danger:     #f53d3d,
   light:      #f4f4f4,
   dark:       #222,
   facebook:  	#3b5998,
   google:     #ffffff,
   twitter:    #00aced,
-  github:     #6cc644
+  github:     #6cc644,
+  bg:         #000000,
+  tb:         #4b0004,
 
 );
+
+$app-background: linear-gradient(to bottom, color($colors, bg) 0%, color($colors, tb) 100%);
+$background-color: transparent;
+$toolbar-background: #4b0004;
+$list-background-color: #4b0004;
+
+//alert
+$alert-md-background-color:#4b0004;
+$alert-ios-background-color:#4b0004;
+$alert-wp-background-color:#4b0004;
+$alert-ios-message-text-color: #fff;
+$alert-md-message-text-color: #fff;
+$alert-wp-message-text-color: #fff;
+$alert-ios-sub-title-text-color:#fff;
+$alert-md-sub-title-text-color:#fff;
+$alert-wp-sub-title-text-color:#fff;
+
+//custom colors
+
 
 
 // App iOS Variables
@@ -75,7 +96,7 @@ $colors: (
 // so that the above variables are used and Ionic's
 // default are overridden.
 
-@import "ionic.theme.default";
+@import "ionic.theme.dark";
 
 
 // Ionicons

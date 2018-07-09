@@ -14,6 +14,8 @@ import { masterFirebaseConfig } from './api-keys';
 import { SaltyProvider } from '../providers/salty/salty';
 import { HttpClientModule } from "@angular/common/http";
 import { GooglePlus } from "@ionic-native/google-plus";
+import { Facebook } from "@ionic-native/facebook";
+
 //pages
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -50,7 +52,7 @@ export const firebaseAuth = {
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     HttpClientModule,
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -70,6 +72,7 @@ export const firebaseAuth = {
     UserServiceProvider,
     GooglePlus,
     UtilProvider,
+    Facebook
   ]
 })
 export class AppModule {}
