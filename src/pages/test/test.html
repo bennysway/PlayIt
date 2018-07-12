@@ -16,16 +16,18 @@
 <ion-content padding>
   <ion-list>
     <ion-item padding>
-      <ion-label floating>Token</ion-label>
-      <ion-input type="text" #saltText></ion-input>
+      <ion-label floating>VideoId</ion-label>
+      <ion-input type="text" #videoId></ion-input>
     </ion-item>
   </ion-list>
 
-<button ion-button full round (click)="makeSalt(saltText.value)">Add</button>
+<button ion-button full round (click)="getInfo(videoId.value)">Get Info</button>
   <div padding>
-    Users<br/>
-    <div *ngFor="let user of users" class="panel">
-      <h3><em>{{user.token}}</em> has {{user.coin}}</h3>
+    Search Result<br/>
+    <div *ngFor="let video of videos" class="panel">
+      <h3><em>{{video.title}}</em></h3>
+      <h4>{{video.channel_name}}</h4>
+      <h5>{{video.date}}</h5>
 
     </div>
   </div>

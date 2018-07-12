@@ -11,6 +11,7 @@ import { UtilProvider } from "../../providers/util/util";
 import { googlePlusConfig } from "../../app/api-keys";
 import {LinkAccountPage} from "../link-account/link-account";
 import { Facebook } from "@ionic-native/facebook";
+import {TestPage} from "../test/test";
 
 @Component({
   selector: 'page-home',
@@ -192,8 +193,8 @@ export class HomePage {
   }
 
   test(){
-    this.link = false;
-    this.util.store.set('link',false);
+    console.log("Clicked Test");
+    this.navCtrl.push(TestPage);
   }
   signInSuccess() {
     try{

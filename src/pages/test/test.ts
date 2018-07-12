@@ -1,8 +1,9 @@
 import {Component} from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { SaltyProvider } from "../../providers/salty/salty";
 import {AngularFireDatabase} from "angularfire2/database";
-import { User} from "../../app/models/user-model";
+import { VideoObject } from "../../app/models/video-model";
+import { VideoProvider } from "../../providers/video/video";
+
 @IonicPage()
 @Component({
   selector: 'page-test',
@@ -10,22 +11,34 @@ import { User} from "../../app/models/user-model";
 })
 export class TestPage {
 
-  users: User[] = [];
-  spice_result:string = "";
+  videos: VideoObject[] = [];
+
   constructor(public navCtrl: NavController,
-              public navParams: NavParams,
-              private salt: SaltyProvider,
-              public db: AngularFireDatabase) {;
+              public db: AngularFireDatabase,
+              private vp: VideoProvider) {
+    ;
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad TestPage');
   }
 
-  makeSalt(item:string){
-    let token: string = this.salt.salter(item);
-    let coin: string = this.salt.spicer(token,"me");
-    this.users.push(new User(token,coin));
+  getInfo(id: string) {
+    this.vp.getVideoFromStorage(id)
+      .then(data => {
+        if(data){
+          console.log("from storage");
+          this.videos.push(data);
+        }
+        else{
+          this.vp.getVideoFromYoutube(id).then(data => {
+            if(data)
+              this.videos.push(data);
+          })
+            .catch(() => {
+              console.log("not found");
+            })
+        }
+      })
   }
-
 }

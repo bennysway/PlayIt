@@ -3,12 +3,6 @@ import { Injectable } from '@angular/core';
 import { ToastController, AlertController } from "ionic-angular";
 import { Storage } from "@ionic/storage";
 
-/*
-  Generated class for the UtilProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class UtilProvider {
 
@@ -16,7 +10,6 @@ export class UtilProvider {
               private toast: ToastController,
               private alert: AlertController,
               public store: Storage) {
-    console.log('Hello UtilProvider Provider');
   }
 
   showToast(text: string) {
@@ -51,6 +44,7 @@ export class UtilProvider {
       });
       alertConst.present().catch(error => console.log(error.message));
     });
-
   }
+
+
 }

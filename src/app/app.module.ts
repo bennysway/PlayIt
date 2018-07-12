@@ -9,13 +9,11 @@ import {AngularFireModule} from "angularfire2";
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFireDatabaseModule } from "angularfire2/database";
 import { masterFirebaseConfig } from './api-keys';
-
 //Providers
 import { SaltyProvider } from '../providers/salty/salty';
 import { HttpClientModule } from "@angular/common/http";
 import { GooglePlus } from "@ionic-native/google-plus";
 import { Facebook } from "@ionic-native/facebook";
-
 //pages
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -26,6 +24,7 @@ import { UserServiceProvider } from '../providers/user-service/user-service';
 import { UtilProvider } from '../providers/util/util';
 import { QuickActionsPage } from "../pages/quick-actions/quick-actions";
 import { LinkAccountPage } from "../pages/link-account/link-account";
+import { VideoProvider } from '../providers/video/video';
 
 export const firebaseAuth = {
     apiKey: masterFirebaseConfig.apiKey,
@@ -68,11 +67,13 @@ export const firebaseAuth = {
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    {provide: Window, useValue: window},
     SaltyProvider,
     UserServiceProvider,
     GooglePlus,
     UtilProvider,
-    Facebook
+    Facebook,
+    VideoProvider
   ]
 })
 export class AppModule {}
