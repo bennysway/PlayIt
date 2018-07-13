@@ -14,6 +14,7 @@ import { SaltyProvider } from '../providers/salty/salty';
 import { HttpClientModule } from "@angular/common/http";
 import { GooglePlus } from "@ionic-native/google-plus";
 import { Facebook } from "@ionic-native/facebook";
+import { VideoProvider } from '../providers/video/video';
 //pages
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -24,7 +25,7 @@ import { UserServiceProvider } from '../providers/user-service/user-service';
 import { UtilProvider } from '../providers/util/util';
 import { QuickActionsPage } from "../pages/quick-actions/quick-actions";
 import { LinkAccountPage } from "../pages/link-account/link-account";
-import { VideoProvider } from '../providers/video/video';
+import { SettingsPage } from "../pages/settings/settings";
 
 export const firebaseAuth = {
     apiKey: masterFirebaseConfig.apiKey,
@@ -42,7 +43,8 @@ export const firebaseAuth = {
     PlayerPage,
     TestPage,
     QuickActionsPage,
-    LinkAccountPage
+    LinkAccountPage,
+    SettingsPage
   ],
   imports: [
     BrowserModule,
@@ -61,7 +63,8 @@ export const firebaseAuth = {
     PlayerPage,
     TestPage,
     QuickActionsPage,
-    LinkAccountPage
+    LinkAccountPage,
+    SettingsPage
   ],
   providers: [
     StatusBar,
@@ -73,7 +76,7 @@ export const firebaseAuth = {
     GooglePlus,
     UtilProvider,
     Facebook,
-    VideoProvider
+    VideoProvider,
   ]
 })
 export class AppModule {}

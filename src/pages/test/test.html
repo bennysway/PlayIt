@@ -27,7 +27,7 @@
     <div *ngFor="let video of videos" class="panel">
       <h3><em>{{video.title}}</em></h3>
       <h4>{{video.channel_name}}</h4>
-      <h5>{{video.date}}</h5>
+      <h5>{{video.date | date : 'fullDate'}}</h5>
 
     </div>
   </div>

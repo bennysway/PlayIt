@@ -1,1 +1,26 @@
-<ion-nav [root]="rootPage"></ion-nav>
+<ion-menu [content]="content" type="reveal">
+  <ion-content padding>
+    <ion-list no-lines>
+      <ion-item>
+        <ion-avatar item-start>
+          <img src="https://background-tiles.com/overview/red/patterns/large/1033.gif">
+        </ion-avatar>
+        <h2>{{playItName}}</h2>
+      </ion-item>
+      <ion-list-header>CHANNELS</ion-list-header>
+      <ion-item>
+        <ion-icon name="logo-youtube" item-start></ion-icon>
+        Youtube Music
+      </ion-item>
+      <ion-list-header>PLAYLISTS</ion-list-header>
+      <ion-item *ngFor="let playlist of playlists">
+        {{playlist}}
+      </ion-item>
+      <ion-item>
+        <button padding ion-button round full color="tb" (click)="addPlaylist()"><ion-icon name="add-circle"></ion-icon></button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-nav [root]="rootPage" #content></ion-nav>

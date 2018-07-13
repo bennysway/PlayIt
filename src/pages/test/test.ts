@@ -27,7 +27,6 @@ export class TestPage {
     this.vp.getVideoFromStorage(id)
       .then(data => {
         if(data){
-          console.log("from storage");
           this.videos.push(data);
         }
         else{

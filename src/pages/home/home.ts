@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController} from 'ionic-angular';
+import {Events, NavController} from 'ionic-angular';
 import { RegisterPage } from "../register/register";
 import { AngularFireAuth } from 'angularfire2/auth';
 import { PlayerPage} from "../player/player";
@@ -31,7 +31,8 @@ export class HomePage {
               private plt: Platform,
               private util: UtilProvider,
               private googlePlus : GooglePlus,
-              private facebook : Facebook) {
+              private facebook : Facebook,
+              private events : Events) {
     this.checkDevice();
     this.util.store.get('link').then(result => {
       this.link = result;
@@ -198,9 +199,9 @@ export class HomePage {
   }
   signInSuccess() {
     try{
-      console.log(firebase.auth().currentUser);
       if(firebase.auth().currentUser){
         this.util.showToast("Signed in 😊");
+        this.events.publish('signInSuccess');
         if(this.link){
           this.util.showToast("Ready to link...");
           this.util.store.remove('link');

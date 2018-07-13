@@ -45,6 +45,40 @@ export class UtilProvider {
       alertConst.present().catch(error => console.log(error.message));
     });
   }
+  showPrompt(title: string,
+             message: string,
+             placeHolder : string,
+             confirmMessage: string,
+             denyMessage: string) : Promise<string>{
+    return new Promise<string>((accept) =>{
+      let prompt = this.alert.create({
+        title: title,
+        message: message,
+        inputs: [
+          {
+            name: 'input',
+            placeholder: placeHolder
+          },
+        ],
+        buttons: [
+          {
+            text: confirmMessage,
+            handler: data => {
+              console.log(data.input);
+              accept(data.input);
+            }
+          },
+          {
+            text: denyMessage,
+            handler: () => {
+              console.log(title + " prompt closed.");
+            }
+          }
+        ]
+      });
+      prompt.present();
+    });
+  }
 
 
 }

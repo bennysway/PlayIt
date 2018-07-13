@@ -51,7 +51,7 @@ $colors: (
 $app-background: linear-gradient(to bottom, color($colors, bg) 0%, color($colors, tb) 100%);
 $background-color: transparent;
 $toolbar-background: #4b0004;
-$list-background-color: #4b0004;
+$list-background-color: transparent;
 
 //alert
 $alert-md-background-color:#4b0004;
@@ -63,6 +63,10 @@ $alert-wp-message-text-color: #fff;
 $alert-ios-sub-title-text-color:#fff;
 $alert-md-sub-title-text-color:#fff;
 $alert-wp-sub-title-text-color:#fff;
+$alert-ios-input-text-color:#fff;
+$alert-md-input-text-color:#fff;
+$alert-wp-input-text-color:#fff;
+
 
 //custom colors
 

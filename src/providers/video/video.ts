@@ -18,7 +18,7 @@ export class VideoProvider {
   }
 
   getVideoFromYoutube(videoId : string){
-    return new Promise((resolve,reject) =>{
+    return new Promise<VideoObject>((resolve,reject) =>{
       this.getVideoDataFromHttp(videoId)
         .then(data => {
           let items = data.items;
@@ -42,7 +42,7 @@ export class VideoProvider {
     return this.util.store.get(videoId);
   }
 
-  getVideoDataFromHttp(videoId : string){
+  getVideoDataFromHttp(videoId : string):Promise<any>{
     let url = this.baseUrl + videoId;
     return new Promise(resolve => {
       this.http.get(url).subscribe(data => {

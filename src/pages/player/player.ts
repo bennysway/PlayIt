@@ -13,7 +13,7 @@ export class PlayerPage {
 
   @ViewChild('ytPlayer') ytPlayer;
   trustedVideoUrl: SafeResourceUrl;
-  videoId : string = 'OCmCLfLPxzM';
+  videoId : string = '6KVjo36lrSw';
   video: any = {
     link: 'https://www.youtube.com/embed/'+this.videoId+'?&autoplay=1&loop=1&rel=0&showinfo=0&color=white&iv_load_policy=3&playlist='+this.videoId ,
     title: 'Awesome video'
@@ -36,8 +36,6 @@ export class PlayerPage {
       ev : myEvent
     })
   }
-  stop(){
-    this.ytPlayer.stop();
-  }
+
 
 }

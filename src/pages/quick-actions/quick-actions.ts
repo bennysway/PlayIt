@@ -4,6 +4,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { UtilProvider } from "../../providers/util/util";
 import { HomePage } from "../home/home";
 import * as firebase from "firebase";
+import {SettingsPage} from "../settings/settings";
 
 /**
  * Generated class for the QuickActionsPage page.
@@ -44,7 +45,7 @@ export class QuickActionsPage {
   }
 
   openSettings(){
-    this.util.showToast("Under construction.");
+    this.navCtrl.push(SettingsPage);
   }
 
 }
