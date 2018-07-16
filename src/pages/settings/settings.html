@@ -26,8 +26,11 @@
     </ion-item>
     <ion-item>
       <ion-label floating>DJ Name</ion-label>
-      <ion-input type="text" #name></ion-input>
+      <ion-input type="text" #djname></ion-input>
     </ion-item>
   </ion-list>
-
 </ion-content>
+
+<ion-footer no-shadow style="color: white">
+  <button ion-button round full color="tb" (click)="clearCache()">Clear Cache</button>
+</ion-footer>

@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { ViewController } from "ionic-angular";
+import {Platform, ViewController} from "ionic-angular";
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { UtilProvider } from "../../providers/util/util";
 import { HomePage } from "../home/home";
 import * as firebase from "firebase";
 import {SettingsPage} from "../settings/settings";
+import { App } from "ionic-angular";
 
 /**
  * Generated class for the QuickActionsPage page.
@@ -23,7 +24,17 @@ export class QuickActionsPage {
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private util: UtilProvider,
-              private viewCtrl: ViewController) {
+              private viewCtrl: ViewController,
+              private plt : Platform,
+              private app : App) {
+    this.plt.registerBackButtonAction(() =>{
+      const overlayView = this.app._appRoot._overlayPortal._views[0];
+      if (overlayView && overlayView.dismiss) {
+        overlayView.dismiss();
+      } else {
+        this.app.goBack();
+      }
+    }, 0);
   }
 
   ionViewDidLoad() {

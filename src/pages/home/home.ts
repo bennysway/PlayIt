@@ -70,7 +70,7 @@ export class HomePage {
   }
   signInWithProvider(method: string){
     let provider;
-    this.util.showToast("Signing in with " + method + " ... ");
+    this.util.showLoader("Signing in with " + method + " ... ");
     this.util.store.set('link-from',method);
     switch (method){
       case "Facebook":
@@ -112,7 +112,7 @@ export class HomePage {
       }
     }
     else{
-      firebase.auth().signInWithRedirect(provider).then(() =>{
+      firebase.auth().signInWithPopup(provider).then(() =>{
         return firebase.auth().getRedirectResult();
       }).then(data => {
         console.log("Signed in with " + method);
@@ -166,7 +166,7 @@ export class HomePage {
     try{
       const gPlusUser = await this.googlePlus.login({
         'webClientId' : googlePlusConfig.webClientId,
-        'offline' : true,
+        //'offline' : false,
         'scopes' : 'email'
       });
       return await this.fire.auth.signInWithCredential(firebase.auth.GoogleAuthProvider.credential(gPlusUser.idToken))

@@ -12,6 +12,9 @@
     <ion-title>PlayIt</ion-title>
 
     <ion-buttons end>
+      <button ion-button icon-only (click)="search()">
+        <ion-icon name="search"></ion-icon>
+      </button>
       <button ion-button icon-only (click)="showPopOver($event)">
         <ion-icon name="settings"></ion-icon>
       </button>
@@ -23,4 +26,28 @@
 
 <ion-content padding>
   <iframe #ytPlayer width="100%" height="315" [src]="trustedVideoUrl" frameborder="0" allowfullscreen></iframe>
+  <ion-list>
+    <ion-item *ngFor="let video of videos">
+      <ion-card>
+        <ion-card-header>
+          {{video.channel_name}}
+          <ion-buttons style="float: right">
+            <button ion-button icon-only round outline color="tb" (click)="addToPlaylist(video.id)">
+              <ion-icon name="add"></ion-icon>
+            </button>
+            <button ion-button icon-only round outline color="tb" (click)="play(video.id)">
+              <ion-icon name="play"></ion-icon>
+            </button>
+          </ion-buttons>
+        </ion-card-header>
+        <ion-item>
+          <ion-thumbnail item-end>
+            <img src={{video.thumbnail}}>
+          </ion-thumbnail>
+          <ion-card-title>{{video.title}}</ion-card-title>
+          <p>{{video.date | date : 'mediumDate'}}</p>
+        </ion-item>
+      </ion-card>
+    </ion-item>
+  </ion-list>
 </ion-content>

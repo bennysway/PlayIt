@@ -1,15 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ToastController, AlertController } from "ionic-angular";
+import {ToastController, AlertController, LoadingController, Loading} from "ionic-angular";
 import { Storage } from "@ionic/storage";
 
 @Injectable()
 export class UtilProvider {
+  loading :Loading;
 
   constructor(public http: HttpClient,
               private toast: ToastController,
               private alert: AlertController,
-              public store: Storage) {
+              public store: Storage,
+              public loadCtrl: LoadingController) {
   }
 
   showToast(text: string) {
@@ -79,6 +81,14 @@ export class UtilProvider {
       prompt.present();
     });
   }
-
-
+  showLoader(message : string){
+    let loading = this.loadCtrl.create({
+      content: message,
+      dismissOnPageChange : true,
+    });
+    loading.present();
+    setTimeout(() => {
+      loading.dismiss();
+    }, 6000);
+  }
 }

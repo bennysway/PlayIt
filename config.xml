@@ -3,7 +3,7 @@
     <name>PlayIt</name>
     <description>Stream music, share playlists rate, and be your own DJ</description>
     <author email="farai.fatso@gmail.com" href="http://faraifatso.wixsite.com/bennysway">Clip Seven</author>
-    <content original-src="index.html" src="http://10.5.38.182:8100" />
+    <content src="index.html" />
     <access origin="*" subdomains="true" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -88,8 +88,7 @@
         </host>
     </universal-links>
     <allow-navigation href="http://10.211.2.117:8102" />
-    <allow-navigation href="http://10.5.38.182:8100" />
-    <engine name="android" spec="^7.1.0" />
+    <engine name="android" spec="6.3.0" />
     <engine name="browser" spec="^5.0.3" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
     <plugin name="cordova-plugin-device" spec="^2.0.2" />
@@ -105,6 +104,7 @@
         <variable name="WEB_APPLICATION_CLIENT_ID" value="837369162014-3nobkg7mikfic4st44v61uj35gtnhsb4.apps.googleusercontent.com" />
     </plugin>
     <plugin name="cordova-sqlite-storage" spec="^2.3.2" />
+    <allow-navigation href="http://10.5.38.182:8100" />
     <plugin name="cordova-plugin-facebook4" spec="^2.2.0">
         <variable name="APP_ID" value="1849955215062488" />
         <variable name="APP_NAME" value="PlayItApp" />
