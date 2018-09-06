@@ -15,7 +15,7 @@
       <button ion-button icon-only (click)="search()">
         <ion-icon name="search"></ion-icon>
       </button>
-      <button ion-button icon-only (click)="showPopOver($event)">
+      <button ion-button icon-only (click)="showOptions($event)">
         <ion-icon name="settings"></ion-icon>
       </button>
     </ion-buttons>
@@ -24,18 +24,145 @@
 </ion-header>
 
 
-<ion-content padding>
-  <iframe #ytPlayer width="100%" height="315" [src]="trustedVideoUrl" frameborder="0" allowfullscreen></iframe>
-  <ion-list>
-    <ion-item *ngFor="let video of videos">
-      <ion-card>
+<ion-content padding [style.backgroundImage]= "'url(' + extended.background + ')'"
+             style=" background: transparent no-repeat;background-size: cover;">
+
+  <div id="player" class="embed-responsive embed-responsive-16by9">
+    <div id="placeholder" style="width: 100%" class="embed-responsive-item"></div>
+    <div class="embed-responsive-item" style="width: 100% ; z-index: 90;position: fixed; background-color: black; background-size:cover;"></div>
+  </div>
+
+  <!-- Player buttons -->
+  <ion-grid style="background-color: rgba(21,21,21,0.57)">
+    <ion-row>
+      <ion-col>
+        <button style="background-color: transparent" ion-button full block round icon-only (click)="skipBackBtn()">
+          <ion-icon name="rewind"></ion-icon>
+        </button>
+      </ion-col>
+      <ion-col>
+        <button style="background-color: transparent" ion-button full block round icon-only (click)="prevBtn()">
+          <ion-icon name="skip-backward"></ion-icon>
+        </button>
+      </ion-col>
+      <ion-col>
+        <button style="background-color: transparent" ion-button full block round icon-only (click)="playBtn()">
+          <ion-icon
+            [name]="playing ? 'pause' :'play'">
+          </ion-icon>
+        </button>
+      </ion-col>
+      <ion-col>
+        <button style="background-color: transparent" ion-button full block round icon-only (click)="nextBtn()">
+          <ion-icon name="skip-forward"></ion-icon>
+        </button>
+      </ion-col>
+      <ion-col>
+      <button style="background-color: transparent" ion-button full block round icon-only (click)="skipForwardBtn()">
+        <ion-icon name="fastforward"></ion-icon>
+      </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <!-- Player Row 2 buttons -->
+  <ion-grid style="background-color: rgba(21,21,21,0.57)">
+    <ion-row>
+      <ion-col>
+        <button style="background-color: transparent" ion-button full block round icon-only (click)="togglePanel('playlist',false)">
+          <ion-icon name="list"></ion-icon>
+        </button>
+      </ion-col>
+      <ion-col *ngIf="searchedVideos != undefined && searchedVideos.length > 0">
+        <button style="background-color: transparent" ion-button full block round icon-only (click)="togglePanel('search',false)">
+          <ion-icon name="search"></ion-icon>
+          <ion-icon name="list"></ion-icon>
+        </button>
+      </ion-col>
+      <ion-col>
+        <button style="background-color: transparent" [style.color]="repeatMode > 0 ? 'red' : 'white'" ion-button full block round icon-only (click)="toggleRepeat()">
+          <ion-icon margin="0px" padding="0px" name="repeat"></ion-icon>
+          <ion-icon *ngIf="repeatMode == 2" margin="0px" padding="0px" name="list"></ion-icon>
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <!-- Player Row 3 -->
+  <ion-grid *ngIf="showPlaylist" class="smooth-drop-down" style="background-color: rgba(21,21,21,0.57)">
+    <ion-row>
+      <ion-col>
+        <h2>{{playlistName}}</h2>
+      </ion-col>
+      <ion-col *ngIf="!managePlaylist && searchedVideos!= undefined && searchedVideos.length <= 0">
+        <button style="background-color: transparent" ion-button full block round icon-only (click)="enableEditPlaylist()">
+          <ion-icon name="create"></ion-icon>
+        </button>
+      </ion-col>
+      <ion-col *ngIf="managePlaylist">
+        <button style="background-color: transparent" ion-button full block round icon-only (click)="updatePlaylist()">
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </button>
+      </ion-col>
+      <ion-col *ngIf="managePlaylist">
+        <button style="background-color: transparent" ion-button full block round icon-only (click)="disableEditPlaylist()">
+          <ion-icon name="close-circle"></ion-icon>
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Song Detail Card -->
+  <ion-card class="smooth-drop-down" *ngIf="showDetails" style="background: #000000a0">
+    <ion-card-header>
+      <ion-item style="background: #00000040">
+        <ion-avatar item-left>
+          <img src={{info.thumbnail}}>
+        </ion-avatar>
+        {{info.title}}
+        <ion-buttons style="float: right">
+          <button ion-button round style="text-transform: none;" color="tb" class="slide-to-left" *ngIf=!truncating>{{extended.tags[tagsPosition]}}</button>
+
+          <button ion-button icon-only round color="tb" (click)="showMoreInfo()">
+            <ion-icon name="information"></ion-icon>
+          </button>
+          <button ion-button icon-only round color="tb" (click)="addToPlayList(info.id,info.title)">
+            <ion-icon name="add"></ion-icon>
+          </button>
+        </ion-buttons>
+      </ion-item>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <h1>{{info.channel_name}}</h1>
+        <em>{{info.date | date : 'yyyy'}}</em>
+      </ion-item>
+      <ion-item style="color: white" text-wrap>
+        <p *ngIf="truncating" class="smooth-rise-up">
+          {{info.description}}
+        </p>
+        <span *ngIf="!truncating" class="smooth-drop-down">
+              {{extended.description}}
+            </span>
+      </ion-item>
+      <ion-item>
+        <div (click)="togglePurity()" [ngClass]="truncating ? 'shrink-purity' : 'expand-purity'" style="background-color: #f00; border-radius: 20px; height: 2px; overflow: hidden">
+          <div class="smooth-reduce" [ngStyle]="{'background-color' : '#4b0004' , 'width' : extended.purity + '%' , 'height' : '100%' , 'border-radius': '20px', 'text-align': 'center' , 'vertical-align': 'middle'}">
+            <p style="line-height: 20px; color: white" *ngIf="!truncating">{{extended.purity}}%</p>
+          </div>
+        </div>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+  <!-- Search list -->
+  <ion-list *ngIf="showSearchList">
+    <ion-item no-lines *ngFor="let video of searchedVideos; index as i">
+      <ion-card style="background-color: #000000a0">
         <ion-card-header>
           {{video.channel_name}}
           <ion-buttons style="float: right">
-            <button ion-button icon-only round outline color="tb" (click)="addToPlaylist(video.id)">
+            <button ion-button icon-only round color="tb" (click)="addToPlayList(video.id,video.title)">
               <ion-icon name="add"></ion-icon>
             </button>
-            <button ion-button icon-only round outline color="tb" (click)="play(video.id)">
+            <button ion-button icon-only round color="tb" (click)="playFromList(i)">
               <ion-icon name="play"></ion-icon>
             </button>
           </ion-buttons>
@@ -50,4 +177,26 @@
       </ion-card>
     </ion-item>
   </ion-list>
+
+  <!-- Current Playlist -->
+  <ion-list *ngIf="showPlaylist">
+    <ion-item no-lines *ngFor="let song of playlist; index as i">
+      <ion-card [style.color]="song.id == videoId ? 'red' : 'grey'" padding="1px" (click)="playFromList(i)">
+        {{i + 1}}. {{song.title}}
+        <!-- Edit playlist buttons -->
+        <ion-buttons *ngIf="managePlaylist" style="float: right">
+          <button round color="tb" ion-button icon-only (click)="moveSongUp(i)">
+            <ion-icon name="arrow-dropup"></ion-icon>
+          </button>
+          <button round color="tb" ion-button icon-only (click)="moveSongDown(i)">
+            <ion-icon name="arrow-dropdown"></ion-icon>
+          </button>
+          <button round color="tb" ion-button icon-only (click)="deleteSong(i)">
+            <ion-icon name="trash"></ion-icon>
+          </button>
+        </ion-buttons>
+      </ion-card>
+    </ion-item>
+  </ion-list>
+
 </ion-content>

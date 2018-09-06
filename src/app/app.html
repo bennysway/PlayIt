@@ -13,11 +13,13 @@
         Youtube Music
       </ion-item>
       <ion-list-header>PLAYLISTS</ion-list-header>
-      <ion-item *ngFor="let playlist of playlists">
-        {{playlist}}
+      <ion-item *ngFor="let playlist of playlists" >
+        <p (click)="loadPlaylist(playlist)">
+          {{playlist}}
+        </p>
       </ion-item>
       <ion-item>
-        <button padding ion-button round full color="tb" (click)="addPlaylist()"><ion-icon name="add-circle"></ion-icon></button>
+        <button padding ion-button round full color="tb" (click)="addPlaylist()" *ngIf="loggedIn"><ion-icon name="add-circle"></ion-icon></button>
       </ion-item>
     </ion-list>
   </ion-content>

@@ -1,16 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { ErrorHandler, NgModule } from '@angular/core';
+import {ErrorHandler, Injectable, NgModule} from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { IonicStorageModule } from "@ionic/storage";
 //FireBase
-import {AngularFireModule} from "angularfire2";
-import { AngularFireAuthModule } from 'angularfire2/auth';
-import { AngularFireDatabaseModule } from "angularfire2/database";
 import { masterFirebaseConfig } from './api-keys';
 //Providers
-import { SaltyProvider } from '../providers/salty/salty';
 import { HttpClientModule } from "@angular/common/http";
 import { GooglePlus } from "@ionic-native/google-plus";
 import { Facebook } from "@ionic-native/facebook";
@@ -21,11 +17,20 @@ import { HomePage } from '../pages/home/home';
 import { RegisterPage } from "../pages/register/register";
 import { PlayerPage } from "../pages/player/player";
 import { TestPage } from "../pages/test/test";
-import { UserServiceProvider } from '../providers/user-service/user-service';
 import { UtilProvider } from '../providers/util/util';
 import { QuickActionsPage } from "../pages/quick-actions/quick-actions";
 import { LinkAccountPage } from "../pages/link-account/link-account";
 import { SettingsPage } from "../pages/settings/settings";
+import {AboutPage} from "../pages/about/about";
+import {AboutPageModule} from "../pages/about/about.module";
+import {LinkAccountPageModule} from "../pages/link-account/link-account.module";
+import {PlayerPageModule} from "../pages/player/player.module";
+import {QuickActionsPageModule} from "../pages/quick-actions/quick-actions.module";
+import {RegisterPageModule} from "../pages/register/register.module";
+import {SettingsPageModule} from "../pages/settings/settings.module";
+import {TestPageModule} from "../pages/test/test.module";
+import {HomePageModule} from "../pages/home/home.module";
+import * as firebase from "firebase";
 
 export const firebaseAuth = {
     apiKey: masterFirebaseConfig.apiKey,
@@ -35,25 +40,29 @@ export const firebaseAuth = {
     storageBucket: masterFirebaseConfig.storageBucket,
     messagingSenderId: masterFirebaseConfig.messagingSenderId
 };
+
+@Injectable()
+export class WindowWrapper extends Window {
+
+}
+export function getWindow() { return window; }
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
-    RegisterPage,
-    PlayerPage,
-    TestPage,
-    QuickActionsPage,
-    LinkAccountPage,
-    SettingsPage
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    AngularFireModule.initializeApp(firebaseAuth),
-    AngularFireAuthModule,
-    AngularFireDatabaseModule,
     HttpClientModule,
     IonicStorageModule.forRoot(),
+    AboutPageModule,
+    LinkAccountPageModule,
+    PlayerPageModule,
+    QuickActionsPageModule,
+    RegisterPageModule,
+    SettingsPageModule,
+    TestPageModule,
+    HomePageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -62,6 +71,7 @@ export const firebaseAuth = {
     RegisterPage,
     PlayerPage,
     TestPage,
+    AboutPage,
     QuickActionsPage,
     LinkAccountPage,
     SettingsPage
@@ -70,9 +80,7 @@ export const firebaseAuth = {
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    {provide: Window, useValue: window},
-    SaltyProvider,
-    UserServiceProvider,
+    {provide: WindowWrapper, useValue: getWindow()},
     GooglePlus,
     UtilProvider,
     Facebook,

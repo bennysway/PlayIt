@@ -1,3 +1,14 @@
 page-player {
 
 }
+
+.transparent-bg{
+  color: black;
+  background-color: #ffffff00;
+  box-shadow: none !important;
+  border-color: rgba(0,0,0,0) !important;
+  outline: none !important;
+}
+.transparent-bg:hover{
+  background-color: #ffffff40;
+}

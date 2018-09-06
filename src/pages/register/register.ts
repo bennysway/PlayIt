@@ -1,13 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
-import { AngularFireAuth } from 'angularfire2/auth';
 import {PlayerPage} from "../player/player";
-/**
- * Generated class for the RegisterPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import * as firebase from "firebase";
 
 @IonicPage()
 @Component({
@@ -17,9 +11,7 @@ import {PlayerPage} from "../player/player";
 export class RegisterPage {
 
   constructor(public navCtrl: NavController,
-              public navParams: NavParams,
-              public alertCtrl: AlertController,
-              private fire: AngularFireAuth) {
+              public alertCtrl: AlertController) {
   }
 
   @ViewChild('username') usr;
@@ -32,7 +24,7 @@ export class RegisterPage {
 
   signUp() {
     if (this.usr.value != "" && this.pwd.value != "" && this.eml.value != "") {
-      this.fire.auth.createUserWithEmailAndPassword(this.eml.value, this.pwd.value)
+      firebase.auth().createUserWithEmailAndPassword(this.eml.value, this.pwd.value)
         .then(data => {
           this.signUpSuccess();
         })
@@ -53,7 +45,7 @@ export class RegisterPage {
       buttons: [{
         text : 'Next',
         handler : () =>{
-          this.fire.auth.signInWithEmailAndPassword(this.eml.value, this.pwd.value)
+          firebase.auth().signInWithEmailAndPassword(this.eml.value, this.pwd.value)
             .then(data =>{
               this.navCtrl.setRoot(PlayerPage);
             })

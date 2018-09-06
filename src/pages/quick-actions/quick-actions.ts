@@ -1,18 +1,12 @@
 import { Component } from '@angular/core';
-import {Platform, ViewController} from "ionic-angular";
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {Platform} from "ionic-angular";
+import { IonicPage, NavController } from 'ionic-angular';
 import { UtilProvider } from "../../providers/util/util";
 import { HomePage } from "../home/home";
 import * as firebase from "firebase";
 import {SettingsPage} from "../settings/settings";
 import { App } from "ionic-angular";
-
-/**
- * Generated class for the QuickActionsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import {AboutPage} from "../about/about";
 
 @IonicPage()
 @Component({
@@ -22,9 +16,7 @@ import { App } from "ionic-angular";
 export class QuickActionsPage {
 
   constructor(public navCtrl: NavController,
-              public navParams: NavParams,
               private util: UtilProvider,
-              private viewCtrl: ViewController,
               private plt : Platform,
               private app : App) {
     this.plt.registerBackButtonAction(() =>{
@@ -57,6 +49,9 @@ export class QuickActionsPage {
 
   openSettings(){
     this.navCtrl.push(SettingsPage);
+  }
+  about(){
+    this.navCtrl.push(AboutPage);
   }
 
 }

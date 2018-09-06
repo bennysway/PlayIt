@@ -3,14 +3,6 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { UtilProvider } from "../../providers/util/util";
 import * as firebase from "firebase";
 import {PlayerPage} from "../player/player";
-import AuthProvider = firebase.auth.AuthProvider;
-
-/**
- * Generated class for the LinkAccountPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -24,7 +16,7 @@ export class LinkAccountPage {
   link_from : string = "Provider";
   isEmailNeeded : boolean = false;
   credential: any;
-  provider : AuthProvider;
+  provider : firebase.auth.AuthProvider;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,

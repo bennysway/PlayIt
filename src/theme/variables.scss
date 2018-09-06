@@ -45,7 +45,6 @@ $colors: (
   github:     #6cc644,
   bg:         #000000,
   tb:         #4b0004,
-
 );
 
 $app-background: linear-gradient(to bottom, color($colors, bg) 0%, color($colors, tb) 100%);
@@ -57,6 +56,15 @@ $list-background-color: transparent;
 $alert-md-background-color:#4b0004;
 $alert-ios-background-color:#4b0004;
 $alert-wp-background-color:#4b0004;
+$alert-ios-background : #4b0004;
+$alert-md-background : #4b0004;
+$alert-wp-background : #4b0004;
+$alert-ios-input-background-color: #4b0004;
+$alert-md-input-background-color: #4b0004;
+$alert-wp-input-background-color: #4b0004;
+$alert-ios-input-border-color:  #ff004e;
+$alert-md-input-border-color:  #ff004e;
+$alert-wp-input-border-color:  #ff004e;
 $alert-ios-message-text-color: #fff;
 $alert-md-message-text-color: #fff;
 $alert-wp-message-text-color: #fff;
@@ -66,6 +74,9 @@ $alert-wp-sub-title-text-color:#fff;
 $alert-ios-input-text-color:#fff;
 $alert-md-input-text-color:#fff;
 $alert-wp-input-text-color:#fff;
+$alert-ios-border-radius:14px;
+$alert-md-border-radius:14px;
+$alert-wp-border-radius:14px;
 //Loader
 $loading-ios-background:#4b0004;
 $loading-md-background:#4b0004;
@@ -89,6 +100,19 @@ $card-wp-header-color:#f00;
 $card-ios-title-text-color:#fff;
 $card-md-title-text-color:#fff;
 $card-wp-title-text-color:#fff;
+$card-ios-text-color:#fff;
+$card-md-text-color:#fff;
+$card-wp-text-color:#fff;
+//radio alert
+$alert-ios-radio-label-text-color:#f00;
+$alert-md-radio-label-text-color:#f00;
+$alert-wp-radio-label-text-color:#f00;
+$alert-ios-radio-label-text-color-checked:#fff;
+$alert-md-radio-label-text-color-checked:#fff;
+$alert-wp-radio-label-text-color-checked:#fff;
+$alert-ios-sub-title-text-color:#fff;
+$alert-md-sub-title-text-color:#fff;
+$alert-wp-sub-title-text-color:#fff;
 
 
 //custom colors

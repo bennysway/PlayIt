@@ -21,31 +21,12 @@
     </ion-item>
   </ion-list>
 
-<button ion-button full round (click)="getInfo(videoId.value)">Get Info</button>
-  <div padding>
-    Search Result<br/>
-    <ion-list *ngFor="let video of videos" class="panel">
-      <ion-card>
-        <ion-card-header>
-          {{video.channel_name}}
-            <ion-buttons style="float: right">
-              <button ion-button icon-only round color="tb">
-                <ion-icon name="add"></ion-icon>
-              </button>
-              <button ion-button icon-only round color="tb">
-                <ion-icon name="play"></ion-icon>
-              </button>
-            </ion-buttons>
-        </ion-card-header>
-        <ion-item>
-          <ion-thumbnail item-end>
-            <img src={{video.thumbnail}}>
-          </ion-thumbnail>
-          <ion-card-title>{{video.title}}</ion-card-title>
-          <p>{{video.date | date : 'mediumDate'}}</p>
-        </ion-item>
-      </ion-card>
-
-    </ion-list>
+  <button ion-button full round (click)="getInfo(videoId.value)">Get Info</button>
+  <div id="player" class="embed-responsive embed-responsive-16by9">
+    <div id="placeholder" style="width: 100%" class="embed-responsive-item"></div>
+    <div class="embed-responsive-item" style="width: 100% ; z-index: 90;position: fixed; background-color: black; background-size:cover;"></div>
   </div>
+  <button ion-button (click)="push()">Push test</button>
+
+
 </ion-content>

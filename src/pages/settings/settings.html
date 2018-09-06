@@ -28,6 +28,25 @@
       <ion-label floating>DJ Name</ion-label>
       <ion-input type="text" #djname></ion-input>
     </ion-item>
+    <ion-item>
+      <ion-label floating>My Quote</ion-label>
+      <ion-input type="text" #quote></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>My Anthem</ion-label>
+      <ion-input type="text" #anthem></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating padding>Jump video time in  seconds</ion-label>{{skipValue}}
+      <ion-range [(ngModel)]="skipValue" min="5" max="120" step="5" pin="true" snaps="true" #jumpRange >
+        <ion-icon range-left small name="timer"></ion-icon>
+        <ion-icon range-right name="timer"></ion-icon>
+      </ion-range>
+    </ion-item>
+    <ion-item *ngIf="isDeviceMobile">
+      <ion-label>Automatically sign me in.</ion-label>
+      <ion-checkbox color="secondary" [(ngModel)]="autoSignIn"></ion-checkbox>
+    </ion-item>
   </ion-list>
 </ion-content>
 

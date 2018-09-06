@@ -1,7 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import {Events, NavController} from 'ionic-angular';
 import { RegisterPage } from "../register/register";
-import { AngularFireAuth } from 'angularfire2/auth';
 import { PlayerPage} from "../player/player";
 import { Platform } from 'ionic-angular';
 import * as firebase from "firebase";
@@ -11,7 +10,7 @@ import { UtilProvider } from "../../providers/util/util";
 import { googlePlusConfig } from "../../app/api-keys";
 import {LinkAccountPage} from "../link-account/link-account";
 import { Facebook } from "@ionic-native/facebook";
-import {TestPage} from "../test/test";
+import {AboutPage} from "../about/about";
 
 @Component({
   selector: 'page-home',
@@ -21,13 +20,14 @@ export class HomePage {
   @ViewChild('email') eml;
   @ViewChild('password') pwd;
   autoSignIn: boolean = false;
+  isDeviceMobile : boolean;
   users: any;
   link:boolean = false;
   link_to = "";
+  signInMethod = "";
   device_name: string = "none";
   device_icon: string = "none";
   constructor(public navCtrl: NavController ,
-              private fire: AngularFireAuth,
               private plt: Platform,
               private util: UtilProvider,
               private googlePlus : GooglePlus,
@@ -43,25 +43,33 @@ export class HomePage {
     }).catch(() => {
       this.signInAutomatically();
     });
+    this.util.store.get('autoSignIn').then(data =>{
+      if(data != null)
+        this.signInWithProvider(data);
+    });
     let physicalScreenWidth = window.screen.width * window.devicePixelRatio;
     let physicalScreenHeight = window.screen.height * window.devicePixelRatio;
     this.util.store.set('width',physicalScreenWidth);
     this.util.store.set('height', physicalScreenHeight);
+
   }
 
   signIn(){
     this.util.showToast("Signing in with email ... ");
     this.util.store.set('link-from',"Email");
     if(this.eml.value != "" && this.pwd.value != ""){
-      this.fire.auth.signInWithEmailAndPassword(this.eml.value, this.pwd.value)
-        .then(data =>{
-          this.util.store.set('eml', this.eml.value);
-          this.util.store.set('pwd', this.pwd.value);
-          this.signInSuccess();
-        })
-        .catch(error =>{
-          console.log(error.code);
-          this.signInFail(error.code);
+      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .then(() =>{
+          firebase.auth().signInWithEmailAndPassword(this.eml.value, this.pwd.value)
+            .then(data =>{
+              this.util.store.set('eml', this.eml.value);
+              this.util.store.set('pwd', this.pwd.value);
+              this.signInSuccess();
+            })
+            .catch(error =>{
+              console.log(error.code);
+              this.signInFail(error.code);
+            });
         });
     } else {
       this.util.showToast("One or more of the credentials are empty");
@@ -125,7 +133,19 @@ export class HomePage {
       });
     }
   }
+  firebaseSignInWithProvider(method: string){
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(() =>{
+        this.signInMethod = method;
+        this.signInWithProvider(method);
+      })
+      .catch(error => console.log(error));
+  }
+
   signInAutomatically(){
+    if(firebase.auth().currentUser){
+      this.signInSuccess();
+    }
     firebase.auth().getRedirectResult().then(result => {
       if (result.credential) {
         firebase.auth().onAuthStateChanged(user => {
@@ -143,6 +163,7 @@ export class HomePage {
   }
   checkDevice(){
     if(this.plt.is("mobile")){
+      this.isDeviceMobile = true;
       if(this.plt.is("android")){
         this.device_name = "Android";
         this.device_icon = "logo-android";
@@ -157,19 +178,20 @@ export class HomePage {
       }
     }
     if(this.plt.is("core")){
+      this.isDeviceMobile = false;
       this.device_name = "Browser";
       this.device_icon = "browsers";
     }
   }
   //Google
-  async googleSignIn(): Promise<void>{
+  async googleSignIn(): Promise<any>{
     try{
       const gPlusUser = await this.googlePlus.login({
         'webClientId' : googlePlusConfig.webClientId,
         //'offline' : false,
         'scopes' : 'email'
       });
-      return await this.fire.auth.signInWithCredential(firebase.auth.GoogleAuthProvider.credential(gPlusUser.idToken))
+      return await firebase.auth().signInWithCredential(firebase.auth.GoogleAuthProvider.credential(gPlusUser.idToken))
     }
     catch(error) {
       this.signInFail(error.code);
@@ -195,13 +217,20 @@ export class HomePage {
 
   test(){
     console.log("Clicked Test");
-    this.navCtrl.push(TestPage);
+    this.navCtrl.push(AboutPage);
   }
   signInSuccess() {
     try{
       if(firebase.auth().currentUser){
         this.util.showToast("Signed in 😊");
         this.events.publish('signInSuccess');
+        if(this.autoSignIn){
+          this.util.store.set('autoSignIn', this.signInMethod);
+          console.log("Saved automatic signin with " + this.signInMethod);
+        }
+        else{
+          this.util.store.remove('autoSignIn');
+        }
         if(this.link){
           this.util.showToast("Ready to link...");
           this.util.store.remove('link');
@@ -217,6 +246,7 @@ export class HomePage {
         }
       }
     } catch (error){
+      console.log(error);
       this.signInFail(error.code);
     }
 
@@ -269,6 +299,9 @@ export class HomePage {
           this.util.store.remove('link');
           this.link = false;
         });
+        break;
+      case 'auth/popup-blocked':
+        this.util.showToast("You might have a pop-up blocker. Can you please disable it from this app?");
         break;
       default:
         message = "We could not sign you in 😞 Try again later";

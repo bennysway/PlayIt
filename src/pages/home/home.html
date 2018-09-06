@@ -3,7 +3,7 @@
     <!-- LEFT BUTTON -->
     <ion-buttons end>
       <button ion-button icon-only (click)="test()">
-        <ion-icon name="analytics"></ion-icon>
+        <ion-icon name="information-circle"></ion-icon>
       </button>
     </ion-buttons>
     <!-- TITLE -->
@@ -18,6 +18,13 @@
     Stream all music.
     Be your own DJ.
     PlayIt
+  </p>
+  <p style="text-align: center">
+    <i>
+      A Janie M. App <br>
+      UL Project 2018
+
+    </i>
   </p>
   <ion-list>
 
@@ -41,12 +48,12 @@
     Or Sign In with:
   </div>
   <div class="external-sign-in">
-    <button ion-button  color="tb" round (click)="signInWithProvider('Facebook')">  <ion-icon name="logo-facebook"></ion-icon></button>
-    <button ion-button color="tb" round (click)="signInWithProvider('Google')"><ion-icon name="logo-google"></ion-icon></button>
-    <button ion-button  color="tb" round (click)="signInWithProvider('Twitter')"><ion-icon name="logo-twitter"></ion-icon></button>
-    <button ion-button  color="tb" round (click)="signInWithProvider('GitHub')"><ion-icon name="logo-github"></ion-icon></button>
+    <button ion-button  color="tb" round (click)="firebaseSignInWithProvider('Facebook')">  <ion-icon name="logo-facebook"></ion-icon></button>
+    <button ion-button color="tb" round (click)="firebaseSignInWithProvider('Google')"><ion-icon name="logo-google"></ion-icon></button>
+    <button ion-button  color="tb" round (click)="firebaseSignInWithProvider('Twitter')"><ion-icon name="logo-twitter"></ion-icon></button>
+    <button ion-button  color="tb" round (click)="firebaseSignInWithProvider('GitHub')"><ion-icon name="logo-github"></ion-icon></button>
   </div>
-  <ion-item >
+  <ion-item *ngIf="isDeviceMobile">
     <ion-label>Automatically sign me in.</ion-label>
     <ion-checkbox color="secondary" [(ngModel)]="autoSignIn"></ion-checkbox>
   </ion-item>

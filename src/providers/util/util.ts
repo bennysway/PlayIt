@@ -64,16 +64,15 @@ export class UtilProvider {
         ],
         buttons: [
           {
-            text: confirmMessage,
-            handler: data => {
-              console.log(data.input);
-              accept(data.input);
-            }
-          },
-          {
             text: denyMessage,
             handler: () => {
               console.log(title + " prompt closed.");
+            }
+          },
+          {
+            text: confirmMessage,
+            handler: data => {
+              accept(data.input);
             }
           }
         ]
@@ -90,5 +89,28 @@ export class UtilProvider {
     setTimeout(() => {
       loading.dismiss();
     }, 6000);
+  }
+  showSelectList(title : string,
+                 list : Array<string>) : Promise<string>{
+    return new Promise<string>(resolve =>{
+      let alert = this.alert.create();
+      alert.setTitle(title);
+      list.forEach(item =>{
+        alert.addInput({
+          type: 'radio',
+          label: item,
+          value : item,
+          checked : false
+        });
+      });
+      alert.addButton('Cancel');
+      alert.addButton({
+        text : 'OK',
+        handler: data => {
+          resolve(data);
+        }
+      });
+      alert.present();
+    });
   }
 }

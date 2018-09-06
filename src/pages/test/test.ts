@@ -1,22 +1,28 @@
 import {Component} from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import {AngularFireDatabase} from "angularfire2/database";
-import { VideoObject } from "../../app/models/video-model";
+import { IonicPage, NavController} from 'ionic-angular';
 import { VideoProvider } from "../../providers/video/video";
+import {YoutubeProvider} from "../../providers/youtube/youtube";
+import {SettingsPage} from "../settings/settings";
 
 @IonicPage()
 @Component({
   selector: 'page-test',
   templateUrl: 'test.html',
+  providers:[YoutubeProvider]
 })
 export class TestPage {
 
-  videos: VideoObject[] = [];
-
   constructor(public navCtrl: NavController,
-              public db: AngularFireDatabase,
-              private vp: VideoProvider) {
-    ;
+              public ytPlayer : YoutubeProvider) {
+
+  }
+
+  ionViewWillEnter(){
+    let tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    let firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    this.ytPlayer.setupPlayer();
   }
 
   ionViewDidLoad() {
@@ -24,20 +30,10 @@ export class TestPage {
   }
 
   getInfo(id: string) {
-    this.vp.getVideoFromStorage(id)
-      .then(data => {
-        if(data){
-          this.videos.push(data);
-        }
-        else{
-          this.vp.getVideoFromYoutube(id).then(data => {
-            if(data)
-              this.videos.push(data);
-          })
-            .catch(() => {
-              console.log("not found");
-            })
-        }
-      })
+    this.ytPlayer.launchPlayer(id);
+  }
+
+  push(){
+    this.navCtrl.push(SettingsPage);
   }
 }
